@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage>
   var wifiBSSID;
   var wifiIP;
   var wifiName;
-  bool iswificonnected = false;
+  bool isWiFiConnected = false;
   bool isInternetOn = true;
   bool isConnectionWarningShown = false;
   ConnectionWarning connBarWarning;
