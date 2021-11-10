@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:room952_monitoring/AppInfo.dart';
 import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
@@ -35,7 +32,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Room 952 Monitoring.'),
       builder: EasyLoading.init(),
     );
   }
@@ -58,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage>
   var wifiBSSID;
   var wifiIP;
   var wifiName;
-  bool iswificonnected = false;
+  bool isWiFiConnected = false;
   bool isInternetOn = true;
   bool isConnectionWarningShown = false;
   ConnectionWarning connBarWarning;
