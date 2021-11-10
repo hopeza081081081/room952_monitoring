@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:room952_monitoring/AppInfo.dart';
 import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
