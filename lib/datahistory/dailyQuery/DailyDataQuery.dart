@@ -83,7 +83,7 @@ class _DailyDataQueryState extends State<DailyDataQuery> with AutomaticKeepAlive
       try {
         EasyLoading.show(status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
-            'http://${EnvironmentVariable.ipAddress}/dataHistory/daily',
+            Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/daily'),
             body: {'firstdate': _firstDate.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);

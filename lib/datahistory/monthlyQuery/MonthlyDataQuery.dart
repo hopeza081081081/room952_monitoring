@@ -90,7 +90,7 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
       try {
         EasyLoading.show(status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
-            'http://${EnvironmentVariable.ipAddress}/dataHistory/monthly',
+            Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/monthly'),
             body: {'firstdate': _firstDate.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
