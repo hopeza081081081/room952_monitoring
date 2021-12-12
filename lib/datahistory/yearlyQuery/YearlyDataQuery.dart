@@ -63,17 +63,11 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
   }
 
   void onDatePickerConfirmed(DateTime dt) {
-    // last date equl current date
-    // first date have to be current date sub by 1
-    int daysInYear = 0;
-    for (var i = 1; i <= 12; i++) {
-      daysInYear += DayPicker.getDaysInMonth(dt.year, i);
-    }
-    _firstDate = DateTime.utc(dt.year);
-    _lastDate = _firstDate.add(Duration(days: daysInYear));
-    print("Current Date: ${DateTime.now()}");
-    print("First Date: $_firstDate");
-    print("Last Date: $_lastDate");
+    _firstDate = DateTime.parse("${dt.year}-01-01");
+    print("_firstDate: ${_firstDate.toIso8601String()}${_firstDate.timeZoneName}");
+    _lastDate = DateTime.parse("${dt.year}-12-31 23:59:59");
+    print("_lastDate: ${_lastDate.toIso8601String()}${_lastDate.timeZoneName}");
+    
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
         start:
@@ -95,19 +89,16 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
       );
     } else {
       try {
-        debugPrint("_firstDate: ${_firstDate.toString()}");
         EasyLoading.show(
             status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
             Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/yearly'),
             body: {
-              'firstdate': _firstDate.subtract(Duration(hours: 7)).toString(),
-              'lastdate': _lastDate.subtract(Duration(hours: 7)).toString()
+              'firstdate': "${_firstDate.toIso8601String()}${_firstDate.timeZoneName}",
+              'lastdate': "${_lastDate.toIso8601String()}${_lastDate.timeZoneName}"
             }).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
-        debugPrint("_firstDate (subtract): ${_firstDate.subtract(Duration(hours: 7)).toString()}");
-        debugPrint("_firstDate (toLocal): ${_firstDate.toLocal()}+07:00");
         debugPrint(uriResponse.body.toString());
         double aircon1EnergyUsed = 0;
         double aircon2EnergyUsed = 0;
