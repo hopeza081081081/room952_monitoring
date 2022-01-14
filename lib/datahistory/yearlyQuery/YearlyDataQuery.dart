@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:cool_alert/cool_alert.dart';
@@ -18,7 +16,8 @@ class YearlyDataQuery extends StatefulWidget {
   _YearlyDataQueryState createState() => _YearlyDataQueryState();
 }
 
-class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAliveClientMixin{
+class _YearlyDataQueryState extends State<YearlyDataQuery>
+    with AutomaticKeepAliveClientMixin {
   // Network params
   final String ipAddress = 'desolate-waters-84401.herokuapp.com';
   final String port = '3000';
@@ -37,7 +36,11 @@ class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAli
   void initState() {
     // TODO: implement initState
 
-    _datePicker = YearlyDatePicker(onQueryButtonTapped: onQueryButtonTapped, onDatePickerConfirmed: onDatePickerConfirmed, context: this.context,);
+    _datePicker = YearlyDatePicker(
+      onQueryButtonTapped: onQueryButtonTapped,
+      onDatePickerConfirmed: onDatePickerConfirmed,
+      context: this.context,
+    );
     super.initState();
   }
 
@@ -59,49 +62,49 @@ class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAli
     );
   }
 
-  void onDatePickerConfirmed(DateTime dt){
-    // last date equl current date
-    // first date have to be current date sub by 1
-    int daysInYear = 0;
-    for( var i = 1; i <=12; i++ ) {
-      daysInYear += DayPicker.getDaysInMonth(dt.year, i);
-      print(daysInYear);
-    }
-    _firstDate = DateTime.utc(dt.year);
-    _lastDate = _firstDate.add(Duration(days: daysInYear));
-    print("Current Date: ${DateTime.now()}");
-    print("First Date: $_firstDate");
-    print("Last Date: $_lastDate");
+  void onDatePickerConfirmed(DateTime dt) {
+    _firstDate = DateTime.parse("${dt.year}-01-01");
+    print("_firstDate: ${_firstDate.toIso8601String()}${_firstDate.timeZoneName}");
+    _lastDate = DateTime.parse("${dt.year}-12-31 23:59:59");
+    print("_lastDate: ${_lastDate.toIso8601String()}${_lastDate.timeZoneName}");
+    
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
-        start: 'ตั้งแต่ ${_firstDate.day} ${EnvironmentVariable.monthList[_firstDate.month-1]} ${_firstDate.year}',
-        end: 'จนถึง ${_lastDate.day} ${EnvironmentVariable.monthList[_lastDate.month-1]} ${_lastDate.year}',
+        start:
+            'ตั้งแต่ ${_firstDate.day} ${EnvironmentVariable.monthList[_firstDate.month - 1]} ${_firstDate.year}',
+        end:
+            'จนถึง ${_lastDate.day} ${EnvironmentVariable.monthList[_lastDate.month - 1]} ${_lastDate.year}',
       );
-      _datePicker.setDateTimeLabel(dateTimeLabel: '${_firstDate.year}', pickedDateTime: dt);
+      _datePicker.setDateTimeLabel(
+          dateTimeLabel: '${_firstDate.year}', pickedDateTime: dt);
     });
   }
 
-  void onQueryButtonTapped() async{
-    if(_firstDate == null || _lastDate == null){
+  void onQueryButtonTapped() async {
+    if (_firstDate == null || _lastDate == null) {
       CoolAlert.show(
         context: context,
         type: CoolAlertType.warning,
         text: "กรุณากรอกข้อมูล",
       );
-    }
-    else{
+    } else {
       try {
-        EasyLoading.show(status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
+        EasyLoading.show(
+            status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
-            'http://${EnvironmentVariable.ipAddress}/dataHistory/yearly',
-            body: {'firstdate': _firstDate.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
+            Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/yearly'),
+            body: {
+              'firstdate': "${_firstDate.toIso8601String()}${_firstDate.timeZoneName}",
+              'lastdate': "${_lastDate.toIso8601String()}${_lastDate.timeZoneName}"
+            }).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
+        debugPrint(uriResponse.body.toString());
         double aircon1EnergyUsed = 0;
         double aircon2EnergyUsed = 0;
         double aircon3EnergyUsed = 0;
 
-        if(jsonresponse.isNotEmpty){
+        if (jsonresponse.isNotEmpty) {
           EasyLoading.dismiss();
           CoolAlert.show(
             context: context,
@@ -109,54 +112,77 @@ class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAli
             text: "เรียกดูข้อมูลสำเร็จ",
           );
           print(jsonresponse[0].toString());
-          if(jsonresponse[0]['first']['aircon1energy'] == null || jsonresponse[0]['last']['aircon1energy'] == null){
+          if (jsonresponse[0]['first']['aircon1energy'] == null ||
+              jsonresponse[0]['last']['aircon1energy'] == null) {
             print('aircon1energy is null');
             aircon1EnergyUsed = 0;
-          }
-          else{
+          } else {
             print("aircon1energy isn't null");
-            aircon1EnergyUsed = jsonresponse[0]['last']['aircon1energy'] - jsonresponse[0]['first']['aircon1energy'];
+            aircon1EnergyUsed = jsonresponse[0]['last']['aircon1energy'] -
+                jsonresponse[0]['first']['aircon1energy'];
           }
 
-          if(jsonresponse[0]['first']['aircon2energy'] == null || jsonresponse[0]['last']['aircon2energy'] == null){
+          if (jsonresponse[0]['first']['aircon2energy'] == null ||
+              jsonresponse[0]['last']['aircon2energy'] == null) {
             print('aircon2energy is null');
             aircon2EnergyUsed = 0;
-          }
-          else{
+          } else {
             print("aircon2energy isn't null");
-            aircon2EnergyUsed = jsonresponse[0]['last']['aircon2energy'] - jsonresponse[0]['first']['aircon2energy'];
+            aircon2EnergyUsed = jsonresponse[0]['last']['aircon2energy'] -
+                jsonresponse[0]['first']['aircon2energy'];
           }
 
-          if(jsonresponse[0]['first']['aircon3energy'] == null || jsonresponse[0]['last']['aircon3energy'] == null){
+          if (jsonresponse[0]['first']['aircon3energy'] == null ||
+              jsonresponse[0]['last']['aircon3energy'] == null) {
             print('aircon3energy is null');
             aircon3EnergyUsed = 0;
-          }
-          else{
+          } else {
             print("aircon3energy isn't null");
-            aircon3EnergyUsed = jsonresponse[0]['last']['aircon3energy'] - jsonresponse[0]['first']['aircon3energy'];
+            aircon3EnergyUsed = jsonresponse[0]['last']['aircon3energy'] -
+                jsonresponse[0]['first']['aircon3energy'];
           }
-          _dailySummary.gaugeKey.currentState.updateSpeed((aircon1EnergyUsed + aircon2EnergyUsed + aircon3EnergyUsed), animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(aircon1EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(aircon2EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(aircon3EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
-        }
-        else{
+          _dailySummary.gaugeKey.currentState.updateSpeed(
+              (aircon1EnergyUsed + aircon2EnergyUsed + aircon3EnergyUsed),
+              animate: true,
+              duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(
+              aircon1EnergyUsed,
+              animate: true,
+              duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(
+              aircon2EnergyUsed,
+              animate: true,
+              duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(
+              aircon3EnergyUsed,
+              animate: true,
+              duration: Duration(milliseconds: 3000));
+        } else {
           EasyLoading.dismiss();
           CoolAlert.show(
             context: context,
             type: CoolAlertType.warning,
             text: "ไม่พบข้อมูล",
           );
-          _dailySummary.gaugeKey.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummary.gaugeKey.currentState.updateSpeed(0,
+              animate: true, duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(0,
+              animate: true, duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(0,
+              animate: true, duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(0,
+              animate: true, duration: Duration(milliseconds: 3000));
         }
 
-        if(uriResponse.statusCode == 200){
-
-        }
-        else if(uriResponse.statusCode == 404){
+        if (uriResponse.statusCode == 200) {
+        } else if (uriResponse.statusCode == 404) {
+          EasyLoading.dismiss();
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.warning,
+            text: "Error: ${uriResponse.statusCode}",
+          );
+        } else {
           EasyLoading.dismiss();
           CoolAlert.show(
             context: context,
@@ -164,25 +190,14 @@ class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAli
             text: "Error: ${uriResponse.statusCode}",
           );
         }
-        else{
-          EasyLoading.dismiss();
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.warning,
-            text: "Error: ${uriResponse.statusCode}",
-          );
-        }
-
-      }
-      catch(e){
+      } catch (e) {
         EasyLoading.dismiss();
         CoolAlert.show(
           context: context,
           type: CoolAlertType.error,
           text: e.toString(),
         );
-      }
-      finally {
+      } finally {
         //client.close();
       }
     }
@@ -191,5 +206,4 @@ class _YearlyDataQueryState extends State<YearlyDataQuery> with AutomaticKeepAli
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
 }
