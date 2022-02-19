@@ -19,7 +19,7 @@ class YearlyDataQuery extends StatefulWidget {
 class _YearlyDataQueryState extends State<YearlyDataQuery>
     with AutomaticKeepAliveClientMixin {
   // Network params
-  final String ipAddress = 'desolate-waters-84401.herokuapp.com';
+  // final String ipAddress = 'desolate-waters-84401.herokuapp.com';
   final String port = '3000';
   var client = http.Client();
 
