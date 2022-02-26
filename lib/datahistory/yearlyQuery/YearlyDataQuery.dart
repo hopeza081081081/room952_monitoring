@@ -63,11 +63,9 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
   }
 
   void onDatePickerConfirmed(DateTime dt) {
-    _firstDate = DateTime.parse("${dt.year}-01-01");
-    print("_firstDate: ${_firstDate.toIso8601String()}${_firstDate.timeZoneName}");
-    _lastDate = DateTime.parse("${dt.year}-12-31 23:59:59");
-    print("_lastDate: ${_lastDate.toIso8601String()}${_lastDate.timeZoneName}");
-    
+    _firstDate = DateTime.parse("${dt.year}-01-01T00:00:00.000");
+    _lastDate = DateTime.parse("${dt.year+1}-01-01T00:00:00.000");
+
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
         start:
@@ -90,14 +88,20 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
     } else {
       try {
         EasyLoading.show(
-            status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
-        uriResponse = await client.post(
-            Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/yearly'),
-            body: {
-              'firstdate': "${_firstDate.toIso8601String()}${_firstDate.timeZoneName}",
-              'lastdate': "${_lastDate.toIso8601String()}${_lastDate.timeZoneName}"
-            }).timeout(Duration(seconds: 30));
+            status: 'กำลังโหลด',
+            maskType: EasyLoadingMaskType.black
+        );
+        String queryString = Uri(queryParameters: {
+          'firstDate': "${_firstDate.toIso8601String()}",
+          'lastDate': "${_lastDate.toIso8601String()}"
+        }).query;
 
+        print(_firstDate.toIso8601String());
+        print(_lastDate.toIso8601String());
+
+        print(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
+        uriResponse = await client.get(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
+        print(uriResponse.body);
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
         debugPrint(uriResponse.body.toString());
         double aircon1EnergyUsed = 0;
@@ -191,6 +195,7 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
           );
         }
       } catch (e) {
+        print(e);
         EasyLoading.dismiss();
         CoolAlert.show(
           context: context,
