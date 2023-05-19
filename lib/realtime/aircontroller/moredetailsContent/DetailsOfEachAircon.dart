@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 
 ///
 /// it might have 2 method are 'setData', 'getCard'
@@ -13,13 +10,13 @@ class DetailsOfEachAircon {
   String cardLabel = '';
   var jsonData;
 
-  Widget connStatus;
-  Widget voltage;
-  Widget current;
-  Widget power;
-  Widget frequency;
+  late Widget connStatus;
+  late Widget voltage;
+  late Widget current;
+  late Widget power;
+  late Widget frequency;
   // Constructor
-  DetailsOfEachAircon({@required this.cardLabel});
+  DetailsOfEachAircon({required this.cardLabel});
 
   Widget getCard(){
 
@@ -73,7 +70,7 @@ class DetailsOfEachAircon {
     );
   }
 
-  Widget _uiConponents({@required dynamic iconSymbol, @required String textContent}){
+  Widget _uiConponents({required dynamic iconSymbol, required String textContent}){
     return Container(
       /*decoration: BoxDecoration(
         border: Border.all(),

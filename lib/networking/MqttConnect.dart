@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 
 class MqttConnect {
   final clientMQTT = MqttServerClient('soldier.cloudmqtt.com', '');
@@ -26,7 +22,7 @@ class MqttConnect {
       clientMQTT.disconnect();
     }
 
-    if (clientMQTT.connectionStatus.state == MqttConnectionState.connected) {
+    if (clientMQTT.connectionStatus!.state == MqttConnectionState.connected) {
       //print('EXAMPLE::Mosquitto client connected');
     } else {
       /// Use status here rather than state if you also want the broker return code.

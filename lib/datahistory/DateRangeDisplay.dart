@@ -6,7 +6,7 @@ class DateRangeDisplay {
   String startDate = "ตั้งแต่ -";
   String endDate = "จนถึง -";
 
-  void setDateRangeLabel({@required String start, @required String end}){
+  void setDateRangeLabel({required String start, required String end}){
     this.startDate = start;
     this.endDate = end;
   }

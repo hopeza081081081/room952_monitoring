@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
@@ -13,7 +12,7 @@ class RaspberrypiCard {
   StreamController<dynamic> streamControllerForRpiData;
   //dynamic jsonData;
 
-  RaspberrypiCard({@required this.personIcon, @required this.indicatorText, @required this.context, @required this.streamControllerForRpiData});
+  RaspberrypiCard({required this.personIcon, required this.indicatorText, required this.context, required this.streamControllerForRpiData});
 
   Widget getCard() {
     return GFCard(
@@ -65,7 +64,7 @@ class RaspberrypiCard {
     );
   }
 
-  void setData({@required dynamic jsonData}){
+  void setData({required dynamic jsonData}){
     //this.jsonData = jsonData;
 
     if (jsonData.data[0]['online'] == true || jsonData.data[1]['online'] == true) {

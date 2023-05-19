@@ -8,15 +8,13 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:room952_monitoring/networking/ConnectionWarning.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/moredetailsContent/DetailsOfEachRaspberryPI.dart';
 
 // ignore: must_be_immutable
 class RaspberrypiMoreDetails extends StatefulWidget {
   // ignore: close_sinks
-  StreamController<dynamic> streamControllerObject;
+  StreamController<dynamic>? streamControllerObject;
   // Constructor
   RaspberrypiMoreDetails({this.streamControllerObject});
 
@@ -29,8 +27,8 @@ class _RaspberrypiMoreDetailsState
     extends State<RaspberrypiMoreDetails>
     with AutomaticKeepAliveClientMixin {
 
-  DetailsOfEachRaspberryPI rpiObj1;
-  DetailsOfEachRaspberryPI rpiObj2;
+  late DetailsOfEachRaspberryPI rpiObj1;
+  late DetailsOfEachRaspberryPI rpiObj2;
 
   @override
   // TODO: implement wantKeepAlive

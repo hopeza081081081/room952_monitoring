@@ -4,10 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/components/card/gf_card.dart';
-import 'package:getwidget/components/list_tile/gf_list_tile.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:getwidget/position/gf_position.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:room952_monitoring/DataModelJson.dart';
 import 'package:room952_monitoring/networking/MqttConnect.dart';
@@ -15,7 +12,7 @@ import 'package:room952_monitoring/realtime/aircontroller/mainContent/EachAircon
 
 // ignore: must_be_immutable
 class RealtimeAirconControllerMainContent extends StatefulWidget {
-  MqttConnect mqttClient;
+  MqttConnect? mqttClient;
   RealtimeAirconControllerMainContent({this.mqttClient});
 
   @override
@@ -27,9 +24,9 @@ class _RealtimeAirconControllerMainContentState extends State<RealtimeAirconCont
   DataModelJson dmjAircon2 = DataModelJson();
   DataModelJson dmjAircon3 = DataModelJson();
 
-  EachAirconditionCard aircon1card;
-  EachAirconditionCard aircon2card;
-  EachAirconditionCard aircon3card;
+  late EachAirconditionCard aircon1card;
+  late EachAirconditionCard aircon2card;
+  late EachAirconditionCard aircon3card;
 
   // ignore: close_sinks
   StreamController<dynamic> streamControllerForAircon = StreamController<dynamic>.broadcast();
@@ -41,9 +38,9 @@ class _RealtimeAirconControllerMainContentState extends State<RealtimeAirconCont
   @override
   void initState() {
     // TODO: implement initState
-    widget.mqttClient.clientMQTT.updates.listen(onMessage);
-    widget.mqttClient.clientMQTT.onDisconnected = onDisconnected;
-    if(widget.mqttClient.clientMQTT.connectionStatus.state != MqttConnectionState.connected){
+    widget.mqttClient!.clientMQTT.updates!.listen(onMessage);
+    widget.mqttClient!.clientMQTT.onDisconnected = onDisconnected;
+    if(widget.mqttClient!.clientMQTT.connectionStatus!.state != MqttConnectionState.connected){
       dmjAircon1.airconControllerData['properties']['online'] = false;
       dmjAircon2.airconControllerData['properties']['online'] = false;
       dmjAircon3.airconControllerData['properties']['online'] = false;
@@ -90,7 +87,7 @@ class _RealtimeAirconControllerMainContentState extends State<RealtimeAirconCont
   }
 
   void onMessage(List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage masPayload = c[0].payload;
+    final MqttPublishMessage masPayload = c[0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
 
     if (c[0].topic == "myFinalProject/airconController1/measure") {

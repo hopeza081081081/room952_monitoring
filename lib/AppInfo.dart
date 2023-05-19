@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/components/card/gf_card.dart';
 import 'package:getwidget/getwidget.dart';
 
 class AppInfo extends StatefulWidget {

@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:getwidget/getwidget.dart';
 
 // ignore: must_be_immutable
 class MonthlyDatePicker {
   // callbacl function
-  void Function() onQueryButtonTapped;
-  void Function(DateTime dt) onDatePickerConfirmed;
+  void Function()? onQueryButtonTapped;
+  void Function(DateTime dt)? onDatePickerConfirmed;
 
-  BuildContext context;
-  DateTime _currentDateTime = DateTime.now();
-  String dateTimeLabel = 'เดือน ปี';
+  BuildContext? context;
+  DateTime? _currentDateTime = DateTime.now();
+  String? dateTimeLabel = 'เดือน ปี';
   // constructor
   MonthlyDatePicker({this.onQueryButtonTapped, this.onDatePickerConfirmed, this.context});
 
-  void setDateTimeLabel({String dateTimeLabel, DateTime pickedDateTime}) {
+  void setDateTimeLabel({String? dateTimeLabel, DateTime? pickedDateTime}) {
     this._currentDateTime = pickedDateTime;
     this.dateTimeLabel = dateTimeLabel;
   }
@@ -43,7 +42,7 @@ class MonthlyDatePicker {
                         ),
                         Container(
                           padding: EdgeInsets.only(left: 5,right: 5),
-                          child: Text(this.dateTimeLabel),
+                          child: Text(this.dateTimeLabel!),
                         ),
                       ],
                     ),
@@ -71,6 +70,6 @@ class MonthlyDatePicker {
   }
 
   void onDatePickerTapped() async {
-    await DatePicker.showDatePicker(context, currentTime: DateTime.utc(_currentDateTime.year, _currentDateTime.month), onConfirm: onDatePickerConfirmed, locale: LocaleType.th);
+    await DatePicker.showDatePicker(context!, currentTime: DateTime.utc(_currentDateTime!.year, _currentDateTime!.month), onConfirm: onDatePickerConfirmed, locale: LocaleType.th);
   }
 }

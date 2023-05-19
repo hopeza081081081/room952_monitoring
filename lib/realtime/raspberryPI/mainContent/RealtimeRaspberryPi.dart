@@ -3,18 +3,14 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/components/list_tile/gf_list_tile.dart';
-import 'package:getwidget/getwidget.dart';
-import 'package:getwidget/position/gf_position.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:room952_monitoring/DataModelJson.dart';
 import 'package:room952_monitoring/networking/MqttConnect.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RaspberrypiCard.dart';
-import 'package:room952_monitoring/realtime/raspberryPI/moredetailsContent/RaspberrypiMoreDetails.dart';
 
 // ignore: must_be_immutable
 class RealtimeRaspberryPi extends StatefulWidget {
-  MqttConnect mqttClient;
+  MqttConnect? mqttClient;
   RealtimeRaspberryPi({this.mqttClient});
 
   @override
@@ -28,12 +24,12 @@ class _RealtimeRaspberryPiState
 
   //This section declared for general variable.
   StreamController<dynamic> streamControllerForRpiData = StreamController<dynamic>.broadcast();
-  DataModelJson dmj;
+  late DataModelJson dmj;
   //This section declared for general variable.
 
   //This section declared for widgets object.
-  Widget _innerContentVariable;
-  RaspberrypiCard _raspberrypiMainCard;
+  Widget? _innerContentVariable;
+  late RaspberrypiCard _raspberrypiMainCard;
   //This section declared for widgets object.
 
   @override
@@ -44,10 +40,10 @@ class _RealtimeRaspberryPiState
   void initState() {
     // TODO: implement initState
     dmj = DataModelJson();
-    widget.mqttClient.clientMQTT.updates.listen(onMessage);
-    widget.mqttClient.clientMQTT.onDisconnected = onDisconnected;
+    widget.mqttClient!.clientMQTT.updates!.listen(onMessage);
+    widget.mqttClient!.clientMQTT.onDisconnected = onDisconnected;
 
-    if(widget.mqttClient.clientMQTT.connectionStatus.state != MqttConnectionState.connected){
+    if(widget.mqttClient!.clientMQTT.connectionStatus!.state != MqttConnectionState.connected){
       dmj.rpidata[0]['online'] = false;
       dmj.rpidata[1]['online'] = false;
     }
@@ -97,7 +93,7 @@ class _RealtimeRaspberryPiState
   }
 
   void onMessage(List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage masPayload = c[0].payload;
+    final MqttPublishMessage masPayload = c[0].payload as MqttPublishMessage;
     final pt = MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
 
     if (c[0].topic == "myFinalProject/rpi1/objDetector") {

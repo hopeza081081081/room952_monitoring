@@ -23,14 +23,14 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
   final String port = '3000';
   var client = http.Client();
 
-  YearlyDatePicker _datePicker;
+  late YearlyDatePicker _datePicker;
   YearlyUsedSummary _dailySummary = YearlyUsedSummary();
   YearlyUsedExtended _dailySummaryExtended = YearlyUsedExtended();
   DateRangeDisplay _dateRangeDisplay = DateRangeDisplay();
-  var uriResponse;
+  late var uriResponse;
 
-  DateTime _firstDate;
-  DateTime _lastDate;
+  DateTime? _firstDate;
+  DateTime? _lastDate;
 
   @override
   void initState() {
@@ -69,12 +69,12 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
         start:
-            'ตั้งแต่ ${_firstDate.day} ${EnvironmentVariable.monthList[_firstDate.month - 1]} ${_firstDate.year}',
+            'ตั้งแต่ ${_firstDate!.day} ${EnvironmentVariable.monthList[_firstDate!.month - 1]} ${_firstDate!.year}',
         end:
-            'จนถึง ${_lastDate.day} ${EnvironmentVariable.monthList[_lastDate.month - 1]} ${_lastDate.year}',
+            'จนถึง ${_lastDate!.day} ${EnvironmentVariable.monthList[_lastDate!.month - 1]} ${_lastDate!.year}',
       );
       _datePicker.setDateTimeLabel(
-          dateTimeLabel: '${_firstDate.year}', pickedDateTime: dt);
+          dateTimeLabel: '${_firstDate!.year}', pickedDateTime: dt);
     });
   }
 
@@ -92,21 +92,21 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
             maskType: EasyLoadingMaskType.black
         );
         String queryString = Uri(queryParameters: {
-          'firstDate': "${_firstDate.toIso8601String()}",
-          'lastDate': "${_lastDate.toIso8601String()}"
+          'firstDate': "${_firstDate!.toIso8601String()}",
+          'lastDate': "${_lastDate!.toIso8601String()}"
         }).query;
 
-        print(_firstDate.toIso8601String());
-        print(_lastDate.toIso8601String());
+        print(_firstDate!.toIso8601String());
+        print(_lastDate!.toIso8601String());
 
         print(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
         uriResponse = await client.get(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
         print(uriResponse.body);
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
         debugPrint(uriResponse.body.toString());
-        double aircon1EnergyUsed = 0;
-        double aircon2EnergyUsed = 0;
-        double aircon3EnergyUsed = 0;
+        double? aircon1EnergyUsed = 0;
+        double? aircon2EnergyUsed = 0;
+        double? aircon3EnergyUsed = 0;
 
         if (jsonresponse.isNotEmpty) {
           EasyLoading.dismiss();
@@ -145,19 +145,19 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
             aircon3EnergyUsed = jsonresponse[0]['last']['aircon3energy'] -
                 jsonresponse[0]['first']['aircon3energy'];
           }
-          _dailySummary.gaugeKey.currentState.updateSpeed(
-              (aircon1EnergyUsed + aircon2EnergyUsed + aircon3EnergyUsed),
+          _dailySummary.gaugeKey.currentState!.updateSpeed(
+              (aircon1EnergyUsed! + aircon2EnergyUsed! + aircon3EnergyUsed!),
               animate: true,
               duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(
+          _dailySummaryExtended.gaugeKey1.currentState!.updateSpeed(
               aircon1EnergyUsed,
               animate: true,
               duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(
+          _dailySummaryExtended.gaugeKey2.currentState!.updateSpeed(
               aircon2EnergyUsed,
               animate: true,
               duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(
+          _dailySummaryExtended.gaugeKey3.currentState!.updateSpeed(
               aircon3EnergyUsed,
               animate: true,
               duration: Duration(milliseconds: 3000));
@@ -168,13 +168,13 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
             type: CoolAlertType.warning,
             text: "ไม่พบข้อมูล",
           );
-          _dailySummary.gaugeKey.currentState.updateSpeed(0,
+          _dailySummary.gaugeKey.currentState!.updateSpeed(0,
               animate: true, duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(0,
+          _dailySummaryExtended.gaugeKey1.currentState!.updateSpeed(0,
               animate: true, duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(0,
+          _dailySummaryExtended.gaugeKey2.currentState!.updateSpeed(0,
               animate: true, duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(0,
+          _dailySummaryExtended.gaugeKey3.currentState!.updateSpeed(0,
               animate: true, duration: Duration(milliseconds: 3000));
         }
 

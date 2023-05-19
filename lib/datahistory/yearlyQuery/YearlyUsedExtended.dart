@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/components/card/gf_card.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:kdgaugeview/kdgaugeview.dart';
 
@@ -34,7 +31,7 @@ class _YearlyUsedExtendedState extends State<YearlyUsedExtended> {
     );
   }
 
-  Widget _airconColumn({@required Widget imageIcon, @required GlobalKey<KdGaugeViewState> gaugeKeyAll}){
+  Widget _airconColumn({required Widget imageIcon, required GlobalKey<KdGaugeViewState> gaugeKeyAll}){
     return Row(
       children: [
         Expanded(

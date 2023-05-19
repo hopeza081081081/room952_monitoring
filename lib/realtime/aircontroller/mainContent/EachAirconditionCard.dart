@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:room952_monitoring/DataModelJson.dart';
 import 'package:room952_monitoring/realtime/aircontroller/moredetailsContent/RealtimeAirconControllerMoreDetails.dart';
 
 class EachAirconditionCard {
@@ -24,7 +21,7 @@ class EachAirconditionCard {
   // this for variables.
 
   // this for constructor
-  EachAirconditionCard({@required this.rotationController, @required this.cardLabel, @required this.jsonData, @required this.context});
+  EachAirconditionCard({required this.rotationController, required this.cardLabel, required this.jsonData, required this.context});
   // this for constructor
 
   Widget getCard() {

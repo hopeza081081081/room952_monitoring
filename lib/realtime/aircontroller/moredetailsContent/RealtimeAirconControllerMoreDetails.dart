@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:room952_monitoring/realtime/aircontroller/moredetailsContent/DetailsOfEachAircon.dart';
@@ -10,9 +9,9 @@ class RealtimeAirconControllerMoreDetails extends StatefulWidget {
   String pageLabel = 'page label';
   StreamController<dynamic> streamControllerForAircon;
   // ignore: cancel_subscriptions
-  StreamSubscription<dynamic> streamSubscriptionForAircon;
+  late StreamSubscription<dynamic> streamSubscriptionForAircon;
 
-  RealtimeAirconControllerMoreDetails({@required this.pageLabel, @required this.streamControllerForAircon});
+  RealtimeAirconControllerMoreDetails({required this.pageLabel, required this.streamControllerForAircon});
 
   @override
   _RealtimeAirconControllerMoreDetailsState createState() => _RealtimeAirconControllerMoreDetailsState();
@@ -21,7 +20,7 @@ class RealtimeAirconControllerMoreDetails extends StatefulWidget {
 class _RealtimeAirconControllerMoreDetailsState extends State<RealtimeAirconControllerMoreDetails> with AutomaticKeepAliveClientMixin{
   var jsonData;
 
-  DetailsOfEachAircon detailsOfEachAircon;
+  late DetailsOfEachAircon detailsOfEachAircon;
 
   @override
   void initState() {

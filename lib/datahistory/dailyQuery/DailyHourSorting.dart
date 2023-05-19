@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/components/card/gf_card.dart';
 import 'package:getwidget/getwidget.dart';
 
 class DailyHourSorting {
-  List<Widget> _hourContent = List();
+  List<Widget> _hourContent = [];
 
   Widget getHourSort() {
     return GFCard(
@@ -21,7 +19,7 @@ class DailyHourSorting {
     );
   }
 
-  Widget _content({@required double energy, @required DateTime dateTime}) {
+  Widget _content({required double energy, required DateTime dateTime}) {
     double _energy = energy;
     DateTime _dateTime = dateTime;
 
@@ -48,7 +46,7 @@ class DailyHourSorting {
     );
   }
 
-  void setData({@required List<dynamic> data}){
+  void setData({required List<dynamic> data}){
     List<dynamic> _jsonresponse = data;
     double _aircon1EnergyUsed = 0;
     double _aircon2EnergyUsed = 0;

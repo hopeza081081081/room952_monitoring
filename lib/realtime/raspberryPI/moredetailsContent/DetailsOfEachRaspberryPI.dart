@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 
 // ignore: must_be_immutable
 class DetailsOfEachRaspberryPI extends StatefulWidget {
   // ignore: cancel_subscriptions
-  StreamSubscription<dynamic> streamSubscriptionObject;
-  StreamController<dynamic> streamControllerObject;
-  int raspberryPiIndex;
-  String cardTitle = 'not specific.';
+  late StreamSubscription<dynamic> streamSubscriptionObject;
+  StreamController<dynamic>? streamControllerObject;
+  int? raspberryPiIndex;
+  String? cardTitle = 'not specific.';
   DetailsOfEachRaspberryPI({this.streamControllerObject, this.raspberryPiIndex, this.cardTitle});
 
   @override
@@ -22,7 +21,7 @@ class _DetailsOfEachRaspberryPIState extends State<DetailsOfEachRaspberryPI> wit
   @override
   void initState() {
     // TODO: implement initState
-    widget.streamSubscriptionObject = widget.streamControllerObject.stream.listen((event) {
+    widget.streamSubscriptionObject = widget.streamControllerObject!.stream.listen((event) {
       //print(event.toString());
     });
 
@@ -47,11 +46,11 @@ class _DetailsOfEachRaspberryPIState extends State<DetailsOfEachRaspberryPI> wit
       titlePosition: GFPosition.start,
       title: GFListTile(
         avatar: FaIcon(FontAwesomeIcons.raspberryPi),
-        title: Text(widget.cardTitle),
+        title: Text(widget.cardTitle!),
       ),
       content: Container(
         child: StreamBuilder(
-          stream: widget.streamControllerObject.stream,
+          stream: widget.streamControllerObject!.stream,
           builder: _detailsRaspberryPiBuilder,
         ),
       ),
@@ -103,7 +102,7 @@ class _DetailsOfEachRaspberryPIState extends State<DetailsOfEachRaspberryPI> wit
   }
 
   // ignore: non_constant_identifier_names
-  Widget _eachComponents({@required Icon iconSymbol, @required Text textContent}){
+  Widget _eachComponents({required Icon iconSymbol, required Text textContent}){
     return Container(
       /*decoration: BoxDecoration(
         border: Border.all(),

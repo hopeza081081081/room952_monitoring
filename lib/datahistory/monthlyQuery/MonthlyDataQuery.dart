@@ -24,14 +24,14 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
   final String port = '3000';
   var client = http.Client();
 
-  MonthlyDatePicker _datePicker;
+  late MonthlyDatePicker _datePicker;
   MonthlyUsedSummary _dailySummary = MonthlyUsedSummary();
   MonthlyUsedExtended _dailySummaryExtended = MonthlyUsedExtended();
   DateRangeDisplay _dateRangeDisplay = DateRangeDisplay();
-  var uriResponse;
+  late var uriResponse;
 
-  DateTime _firstDate;
-  DateTime _lastDate;
+  DateTime? _firstDate;
+  DateTime? _lastDate;
 
   @override
   void initState() {
@@ -64,17 +64,18 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
     // first date have to be current date sub by 1
 
     _firstDate = DateTime.utc(dt.year, dt.month);
-    _lastDate = _firstDate.add(Duration(days: DayPicker.getDaysInMonth(dt.year, dt.month)));
-    print(DayPicker.getDaysInMonth(dt.year, dt.month));
+    // _lastDate = _firstDate.add(Duration(days: DayPicker.getDaysInMonth(dt.year, dt.month)));
+    // print(DayPicker.getDaysInMonth(dt.year, dt.month));
+    _lastDate = DateTime.utc(dt.year, dt.month);
     print("Current Date: ${DateTime.now()}");
     print("First Date: $_firstDate");
     print("Last Date: $_lastDate");
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
-        start: 'ตั้งแต่ ${_firstDate.day} ${EnvironmentVariable.monthList[_firstDate.month-1]} ${_firstDate.year}',
-        end: 'จนถึง ${_firstDate.day} ${EnvironmentVariable.monthList[_lastDate.month-1]} ${_lastDate.year}',
+        start: 'ตั้งแต่ ${_firstDate!.day} ${EnvironmentVariable.monthList[_firstDate!.month-1]} ${_firstDate!.year}',
+        end: 'จนถึง ${_firstDate!.day} ${EnvironmentVariable.monthList[_lastDate!.month-1]} ${_lastDate!.year}',
       );
-      _datePicker.setDateTimeLabel(dateTimeLabel: '${EnvironmentVariable.monthList[_firstDate.month-1]} / ${_firstDate.year}', pickedDateTime: dt);
+      _datePicker.setDateTimeLabel(dateTimeLabel: '${EnvironmentVariable.monthList[_firstDate!.month-1]} / ${_firstDate!.year}', pickedDateTime: dt);
     });
   }
 
@@ -91,12 +92,12 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
         EasyLoading.show(status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
             Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/monthly'),
-            body: {'firstdate': _firstDate.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
+            body: {'firstdate': _firstDate!.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate!.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
-        double aircon1EnergyUsed = 0;
-        double aircon2EnergyUsed = 0;
-        double aircon3EnergyUsed = 0;
+        double? aircon1EnergyUsed = 0;
+        double? aircon2EnergyUsed = 0;
+        double? aircon3EnergyUsed = 0;
 
         if(jsonresponse.isNotEmpty){
           EasyLoading.dismiss();
@@ -132,10 +133,10 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
             print("aircon3energy isn't null");
             aircon3EnergyUsed = jsonresponse[0]['last']['aircon3energy'] - jsonresponse[0]['first']['aircon3energy'];
           }
-          _dailySummary.gaugeKey.currentState.updateSpeed((aircon1EnergyUsed + aircon2EnergyUsed + aircon3EnergyUsed), animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(aircon1EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(aircon2EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(aircon3EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummary.gaugeKey.currentState!.updateSpeed((aircon1EnergyUsed! + aircon2EnergyUsed! + aircon3EnergyUsed!), animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey1.currentState!.updateSpeed(aircon1EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey2.currentState!.updateSpeed(aircon2EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey3.currentState!.updateSpeed(aircon3EnergyUsed, animate: true,duration: Duration(milliseconds: 3000));
         }
         else{
           EasyLoading.dismiss();
@@ -144,10 +145,10 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
             type: CoolAlertType.warning,
             text: "ไม่พบข้อมูล",
           );
-          _dailySummary.gaugeKey.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey1.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey2.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
-          _dailySummaryExtended.gaugeKey3.currentState.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummary.gaugeKey.currentState!.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey1.currentState!.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey2.currentState!.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
+          _dailySummaryExtended.gaugeKey3.currentState!.updateSpeed(0, animate: true,duration: Duration(milliseconds: 3000));
         }
 
         if(uriResponse.statusCode == 200){

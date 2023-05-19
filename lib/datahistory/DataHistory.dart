@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:room952_monitoring/datahistory/yearlyQuery/YearlyDataQuery.dart';
+import 'package:room952_monitoring/repository/HistoryRepository.dart';
 import 'dailyQuery/DailyDataQuery.dart';
 import 'monthlyQuery/MonthlyDataQuery.dart';
 
@@ -9,14 +10,15 @@ class DataHistory extends StatefulWidget {
   _DataHistoryState createState() => _DataHistoryState();
 }
 
-class _DataHistoryState extends State<DataHistory> with AutomaticKeepAliveClientMixin,SingleTickerProviderStateMixin{
+class _DataHistoryState extends State<DataHistory>
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'รายวัน'),
     Tab(text: 'รายเดือน'),
     Tab(text: 'รายปี'),
   ];
 
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   // TODO: implement wantKeepAlive
@@ -36,11 +38,13 @@ class _DataHistoryState extends State<DataHistory> with AutomaticKeepAliveClient
         controller: _tabController,
         tabs: myTabs,
       ),
-
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          DailyDataQuery(),
+          ChangeNotifierProvider<HistoryRepository>(
+            create: (BuildContext context) => HistoryRepository(),
+            child: DailyDataQuery(),
+          ),
           MonthlyDataQuery(),
           YearlyDataQuery(),
         ],

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ConnectionWarning {
   // ignore: missing_return
-  Widget showConnectionWarning({String warningMsg, bool isShow}){
+  Widget showConnectionWarning({String? warningMsg, bool? isShow}){
     if (isShow == true) {
       //if error is true then show error message box
       return Container(
@@ -15,7 +14,7 @@ class ConnectionWarning {
             margin: EdgeInsets.only(right: 6.00),
             child: Icon(Icons.info, color: Colors.white),
           ), // icon for error message
-          Text(warningMsg, style: TextStyle(color: Colors.white)),
+          Text(warningMsg!, style: TextStyle(color: Colors.white)),
           //show error message text
         ]),
       );
