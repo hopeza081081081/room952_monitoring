@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:room952_monitoring/AppInfo.dart';
-  import 'package:room952_monitoring/datahistory/DataHistory.dart';
+import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
 import 'package:room952_monitoring/networking/MqttConnect.dart';
 import 'package:room952_monitoring/realtime/aircontroller/mainContent/RealtimeAirconControllerMainContent.dart';
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage>
   initState() {
     mqttClient.clientMQTT.onConnected = onConnected;
     mqttClient.clientMQTT.onDisconnected = onDisconnected;
-    mqttClient.clientMQTT.onAutoReconnect = (){
+    mqttClient.clientMQTT.onAutoReconnect = () {
       setState(() {
         isConnectionWarningShown = true;
       });
@@ -103,7 +103,10 @@ class _MyHomePageState extends State<MyHomePage>
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    connBarWarning.showConnectionWarning(warningMsg: "can't establishing connection to server.", isShow: isConnectionWarningShown,),
+                    connBarWarning.showConnectionWarning(
+                      warningMsg: "can't establishing connection to server.",
+                      isShow: isConnectionWarningShown,
+                    ),
                     RealtimeRaspberryPi(
                       mqttClient: mqttClient,
                     ),
@@ -153,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage>
         ],
       ),
     );
+    // return Scaffold();
   }
 
   void onConnected() {
@@ -178,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
-  void onPageChanged(int pageIndex){
+  void onPageChanged(int pageIndex) {
     setState(() => _selectedIndex = pageIndex);
     switch (pageIndex) {
       case 0:
@@ -200,9 +204,7 @@ class _MyHomePageState extends State<MyHomePage>
         break;
 
       default:
-        {
-
-        }
+        {}
         break;
     }
   }
@@ -244,5 +246,4 @@ class _MyHomePageState extends State<MyHomePage>
     await Future.delayed(Duration(seconds: 30));
     // await listener.cancel();
   }
-
 }
