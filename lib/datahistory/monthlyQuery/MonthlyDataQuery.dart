@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
-import 'package:room952_monitoring/EnvironmentVariable.dart';
+import 'package:room952_monitoring/environments/AppENV.dart';
 import 'package:room952_monitoring/datahistory/DateRangeDisplay.dart';
 import 'MonthlyDatePicker.dart';
 import 'MonthlyUsedExtended.dart';
@@ -72,10 +72,10 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
     print("Last Date: $_lastDate");
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
-        start: 'ตั้งแต่ ${_firstDate!.day} ${EnvironmentVariable.monthList[_firstDate!.month-1]} ${_firstDate!.year}',
-        end: 'จนถึง ${_firstDate!.day} ${EnvironmentVariable.monthList[_lastDate!.month-1]} ${_lastDate!.year}',
+        start: 'ตั้งแต่ ${_firstDate!.day} ${AppENV.monthList[_firstDate!.month-1]} ${_firstDate!.year}',
+        end: 'จนถึง ${_firstDate!.day} ${AppENV.monthList[_lastDate!.month-1]} ${_lastDate!.year}',
       );
-      _datePicker.setDateTimeLabel(dateTimeLabel: '${EnvironmentVariable.monthList[_firstDate!.month-1]} / ${_firstDate!.year}', pickedDateTime: dt);
+      _datePicker.setDateTimeLabel(dateTimeLabel: '${AppENV.monthList[_firstDate!.month-1]} / ${_firstDate!.year}', pickedDateTime: dt);
     });
   }
 
@@ -91,7 +91,7 @@ class _MonthlyDataQueryState extends State<MonthlyDataQuery> with AutomaticKeepA
       try {
         EasyLoading.show(status: 'กำลังโหลด', maskType: EasyLoadingMaskType.black);
         uriResponse = await client.post(
-            Uri.parse('http://${EnvironmentVariable.ipAddress}/dataHistory/monthly'),
+            Uri.parse('http://${AppENV.ipAddress}/dataHistory/monthly'),
             body: {'firstdate': _firstDate!.subtract(Duration(hours: 7)).toString(), 'lastdate': _lastDate!.subtract(Duration(hours: 7)).toString()}).timeout(Duration(seconds: 30));
 
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);

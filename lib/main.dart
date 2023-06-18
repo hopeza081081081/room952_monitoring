@@ -11,7 +11,7 @@ import 'package:room952_monitoring/networking/MqttConnect.dart';
 import 'package:room952_monitoring/realtime/aircontroller/mainContent/RealtimeAirconControllerMainContent.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RealtimeRaspberryPi.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {

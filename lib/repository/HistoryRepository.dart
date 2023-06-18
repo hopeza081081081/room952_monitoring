@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:room952_monitoring/EnvironmentVariable.dart';
+import 'package:room952_monitoring/environments/AppENV.dart';
 import 'package:room952_monitoring/model/SummaryHistoryDto.dart';
 import 'package:room952_monitoring/model/GraphHistoryDto.dart';
 
@@ -24,7 +24,7 @@ class HistoryRepository extends ChangeNotifier{
     _historyResponse = await httpClient
         .get(
       Uri.parse(
-          'http://${EnvironmentVariable.ipAddress}/dataHistory/energySummary?StartDate=$startDate&EndDate=$endDate'),
+          'http://${AppENV.ipAddress}/dataHistory/energySummary?StartDate=$startDate&EndDate=$endDate'),
     )
         .timeout(Duration(seconds: 30));
 
@@ -42,7 +42,7 @@ class HistoryRepository extends ChangeNotifier{
     _historyResponse = await httpClient
         .get(
       Uri.parse(
-          'http://${EnvironmentVariable.ipAddress}/dataHistory/chart?StartDate=$startDate&EndDate=$endDate'),
+          'http://${AppENV.ipAddress}/dataHistory/chart?StartDate=$startDate&EndDate=$endDate'),
     )
         .timeout(Duration(seconds: 30));
 

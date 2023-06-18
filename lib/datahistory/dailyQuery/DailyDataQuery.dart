@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:room952_monitoring/EnvironmentVariable.dart';
+import 'package:room952_monitoring/environments/AppENV.dart';
 import 'package:room952_monitoring/datahistory/DateRangeDisplay.dart';
 import 'package:room952_monitoring/datahistory/dailyQuery/SummaryWidgetHistory.dart';
 import 'package:room952_monitoring/repository/HistoryRepository.dart';
@@ -89,13 +89,13 @@ class _DailyDataQueryState extends State<DailyDataQuery>
       //_dailySummary.key.currentState.updateSpeed(50, animate: true,duration: Duration(milliseconds: 3000));
       _dateRangeDisplay.setDateRangeLabel(
         start:
-            'ตั้งแต่ ${_startDate!.day} ${EnvironmentVariable.monthList[_startDate!.month - 1]} ${_startDate!.year}',
+            'ตั้งแต่ ${_startDate!.day} ${AppENV.monthList[_startDate!.month - 1]} ${_startDate!.year}',
         end:
-            'จนถึง ${_endDate!.day} ${EnvironmentVariable.monthList[_endDate!.month - 1]} ${_endDate!.year}',
+            'จนถึง ${_endDate!.day} ${AppENV.monthList[_endDate!.month - 1]} ${_endDate!.year}',
       );
       _datePicker.setDateTimeLabel(
           dateTimeLabel:
-              '${_startDate!.day} / ${EnvironmentVariable.monthList[_startDate!.month - 1]} / ${_startDate!.year}',
+              '${_startDate!.day} / ${AppENV.monthList[_startDate!.month - 1]} / ${_startDate!.year}',
           pickedDateTime: dt);
     });
   }

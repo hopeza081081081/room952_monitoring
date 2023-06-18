@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
-import '../../EnvironmentVariable.dart';
+import '../../environments/AppENV.dart';
 import '../DateRangeDisplay.dart';
 import 'YearlyDatePicker.dart';
 import 'YearlyUsedExtended.dart';
@@ -69,9 +69,9 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
     setState(() {
       _dateRangeDisplay.setDateRangeLabel(
         start:
-            'ตั้งแต่ ${_firstDate!.day} ${EnvironmentVariable.monthList[_firstDate!.month - 1]} ${_firstDate!.year}',
+            'ตั้งแต่ ${_firstDate!.day} ${AppENV.monthList[_firstDate!.month - 1]} ${_firstDate!.year}',
         end:
-            'จนถึง ${_lastDate!.day} ${EnvironmentVariable.monthList[_lastDate!.month - 1]} ${_lastDate!.year}',
+            'จนถึง ${_lastDate!.day} ${AppENV.monthList[_lastDate!.month - 1]} ${_lastDate!.year}',
       );
       _datePicker.setDateTimeLabel(
           dateTimeLabel: '${_firstDate!.year}', pickedDateTime: dt);
@@ -99,8 +99,8 @@ class _YearlyDataQueryState extends State<YearlyDataQuery>
         print(_firstDate!.toIso8601String());
         print(_lastDate!.toIso8601String());
 
-        print(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
-        uriResponse = await client.get(Uri.parse('http://${EnvironmentVariable.ipAddress}/api/v2/histories/yearly?$queryString'));
+        print(Uri.parse('http://${AppENV.ipAddress}/api/v2/histories/yearly?$queryString'));
+        uriResponse = await client.get(Uri.parse('http://${AppENV.ipAddress}/api/v2/histories/yearly?$queryString'));
         print(uriResponse.body);
         List<dynamic> jsonresponse = jsonDecode(uriResponse.body);
         debugPrint(uriResponse.body.toString());
