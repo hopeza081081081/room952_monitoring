@@ -1,15 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:provider/provider.dart';
 import 'package:room952_monitoring/AppInfo.dart';
 import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
-import 'package:room952_monitoring/networking/MqttConnect.dart';
+import 'package:room952_monitoring/networking/MqttManager.dart';
+import 'package:room952_monitoring/networking/bloc/mqtt_payload_data/mqtt_payload_data_bloc.dart';
+import 'package:room952_monitoring/presentation/realtime_aircondition/realtime_aircondition_box.dart';
 import 'package:room952_monitoring/realtime/aircontroller/mainContent/RealtimeAirconControllerMainContent.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RealtimeRaspberryPi.dart';
+
+import 'repository/HistoryRepository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,16 +32,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Room 952 Monitoring.',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        brightness: Brightness.dark,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Room 952 Monitoring.'),
-      builder: EasyLoading.init(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MqttPayloadBloc>(
+          create: (context) => MqttPayloadBloc(),
+        )
+      ],
+      child: MaterialApp(
+          title: 'Room 952 Monitoring.',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.red,
+            brightness: Brightness.dark,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: MyHomePage(title: 'Room 952 Monitoring.')),
     );
   }
 }
@@ -49,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController = PageController();
   int _selectedIndex = 0;
-  MqttConnect mqttClient = MqttConnect();
+  MqttManager mqttClient = MqttManager();
   String appbarTitle = "ข้อมูลจากอุปกรณ์ต่าง ๆ";
   var wifiBSSID;
   var wifiIP;
@@ -87,6 +101,8 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
+    // print(context.watch<MqttManager>().mqttData);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 24,
@@ -103,16 +119,15 @@ class _MyHomePageState extends State<MyHomePage>
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    connBarWarning.showConnectionWarning(
-                      warningMsg: "can't establishing connection to server.",
-                      isShow: isConnectionWarningShown,
-                    ),
+                    // connBarWarning.showConnectionWarning(
+                    //   warningMsg: "can't establishing connection to server.",
+                    //   isShow: isConnectionWarningShown,
+                    // ),
+                    RealtimeAirconditionBox(),
                     RealtimeRaspberryPi(
                       mqttClient: mqttClient,
                     ),
-                    RealtimeAirconControllerMainContent(
-                      mqttClient: mqttClient,
-                    ),
+                    RealtimeAirconditionBox(),
                   ],
                 ),
               ),
@@ -159,7 +174,39 @@ class _MyHomePageState extends State<MyHomePage>
     // return Scaffold();
   }
 
+  void onMessage(List<MqttReceivedMessage<MqttMessage>> c) {
+    final MqttPublishMessage masPayload = c[0].payload as MqttPublishMessage;
+    final pt =
+        MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
+
+    print(jsonDecode(pt));
+    if (c[0].topic == "myFinalProject/airconController1/measure") {
+      
+    }
+    if (c[0].topic == "myFinalProject/airconController1/properties") {
+    }
+
+    if (c[0].topic == "myFinalProject/airconController2/measure") {
+    
+    }
+    if (c[0].topic == "myFinalProject/airconController2/properties") {
+    }
+
+    if (c[0].topic == "myFinalProject/airconController3/measure") {
+     
+    }
+    if (c[0].topic == "myFinalProject/airconController3/properties") {
+    }
+
+    if (c[0].topic == "myFinalProject/server/properties/online") {
+      if (pt == 'false') {
+       
+      }
+    }
+  }
+
   void onConnected() {
+    mqttClient.clientMQTT.updates!.listen(onMessage);
     CoolAlert.show(
       context: context,
       type: CoolAlertType.success,

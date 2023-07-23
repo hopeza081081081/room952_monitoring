@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:room952_monitoring/datahistory/yearlyQuery/YearlyDataQuery.dart';
-import 'package:room952_monitoring/repository/HistoryRepository.dart';
 import 'dailyQuery/DailyDataQuery.dart';
 import 'monthlyQuery/MonthlyDataQuery.dart';
 
@@ -41,10 +39,7 @@ class _DataHistoryState extends State<DataHistory>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          ChangeNotifierProvider<HistoryRepository>(
-            create: (BuildContext context) => HistoryRepository(),
-            child: DailyDataQuery(),
-          ),
+          DailyDataQuery(),
           MonthlyDataQuery(),
           YearlyDataQuery(),
         ],

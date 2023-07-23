@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:room952_monitoring/DataModelJson.dart';
-import 'package:room952_monitoring/networking/MqttConnect.dart';
+import 'package:room952_monitoring/networking/MqttManager.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RaspberrypiCard.dart';
 
 // ignore: must_be_immutable
 class RealtimeRaspberryPi extends StatefulWidget {
-  MqttConnect? mqttClient;
+  MqttManager? mqttClient;
   RealtimeRaspberryPi({this.mqttClient});
 
   @override

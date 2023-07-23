@@ -10,11 +10,12 @@ import 'package:room952_monitoring/repository/HistoryRepository.dart';
 class GraphWidgetHistory extends StatefulWidget {
   late List<GraphHistoryDto> chartData = [
     GraphHistoryDto(
-        sId: '1',
-        timeStamp: DateTime(2010),
-        aircon1energy: 100,
-        aircon2energy: 200,
-        aircon3energy: 300),
+      sId: '1',
+      timeStamp: DateTime(2010),
+      aircon1energy: 100,
+      aircon2energy: 200,
+      aircon3energy: 300,
+    ),
   ];
 
   @override
