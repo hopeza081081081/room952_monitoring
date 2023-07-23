@@ -1,19 +1,19 @@
 part of 'mqtt_payload_data_bloc.dart';
 
-class MqttEvent extends Equatable {
-  const MqttEvent();
+class MqttManagerBlocEvent extends Equatable {
+  const MqttManagerBlocEvent();
 
   @override
   // TODO: implement props
   List<Object?> get props => [];
 }
 
-class StartListeningPayloadEvent extends MqttEvent {
-  final MqttManager mqttManager;
+class StartListeningPayloadEvent extends MqttManagerBlocEvent {
+  final dynamic mqttMessagePayload;
 
-  StartListeningPayloadEvent({required this.mqttManager});
+  StartListeningPayloadEvent({required this.mqttMessagePayload});
 
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [mqttMessagePayload];
 }

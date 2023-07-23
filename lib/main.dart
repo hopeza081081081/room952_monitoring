@@ -34,8 +34,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<MqttPayloadBloc>(
-          create: (context) => MqttPayloadBloc(),
+        BlocProvider<MqttManagerBloc>(
+          create: (context) => MqttManagerBloc(),
         )
       ],
       child: MaterialApp(
@@ -123,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage>
                     //   warningMsg: "can't establishing connection to server.",
                     //   isShow: isConnectionWarningShown,
                     // ),
-                    RealtimeAirconditionBox(),
                     RealtimeRaspberryPi(
                       mqttClient: mqttClient,
                     ),
@@ -179,42 +178,39 @@ class _MyHomePageState extends State<MyHomePage>
     final pt =
         MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
 
-    print(jsonDecode(pt));
-    if (c[0].topic == "myFinalProject/airconController1/measure") {
-      
-    }
-    if (c[0].topic == "myFinalProject/airconController1/properties") {
-    }
+    // print(jsonDecode(pt));
 
-    if (c[0].topic == "myFinalProject/airconController2/measure") {
-    
+    if (c[0].topic == "myFinalProject/airconController4/measure") {
+      context.read<MqttManagerBloc>().add(
+            StartListeningPayloadEvent(
+              mqttMessagePayload: jsonDecode(pt),
+            ),
+          );
     }
-    if (c[0].topic == "myFinalProject/airconController2/properties") {
-    }
+    // if (c[0].topic == "myFinalProject/airconController1/measure") {}
+    // if (c[0].topic == "myFinalProject/airconController1/properties") {}
 
-    if (c[0].topic == "myFinalProject/airconController3/measure") {
-     
-    }
-    if (c[0].topic == "myFinalProject/airconController3/properties") {
-    }
+    // if (c[0].topic == "myFinalProject/airconController2/measure") {}
+    // if (c[0].topic == "myFinalProject/airconController2/properties") {}
 
-    if (c[0].topic == "myFinalProject/server/properties/online") {
-      if (pt == 'false') {
-       
-      }
-    }
+    // if (c[0].topic == "myFinalProject/airconController3/measure") {}
+    // if (c[0].topic == "myFinalProject/airconController3/properties") {}
+
+    // if (c[0].topic == "myFinalProject/server/properties/online") {
+    //   if (pt == 'false') {}
+    // }
   }
 
   void onConnected() {
     mqttClient.clientMQTT.updates!.listen(onMessage);
-    CoolAlert.show(
-      context: context,
-      type: CoolAlertType.success,
-      text: "เชื่อมต่อแล้ว",
-    );
-    setState(() {
-      isConnectionWarningShown = false;
-    });
+    // CoolAlert.show(
+    //   context: context,
+    //   type: CoolAlertType.success,
+    //   text: "เชื่อมต่อแล้ว",
+    // );
+    // setState(() {
+    //   isConnectionWarningShown = false;
+    // });
   }
 
   void onDisconnected() {

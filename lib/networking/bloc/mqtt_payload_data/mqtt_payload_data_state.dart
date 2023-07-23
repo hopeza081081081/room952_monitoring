@@ -1,8 +1,13 @@
 part of 'mqtt_payload_data_bloc.dart';
 
-class MqttMessagePayloadState extends Equatable {
+class MqttManagerBlocState extends Equatable {
   final dynamic messagePayload;
-  const MqttMessagePayloadState({this.messagePayload});
+  const MqttManagerBlocState({this.messagePayload});
+
+  String getVoltage() {
+    messagePayload['voltage'];
+    return messagePayload['voltage'].toString();
+  }
 
   @override
   // TODO: implement props
