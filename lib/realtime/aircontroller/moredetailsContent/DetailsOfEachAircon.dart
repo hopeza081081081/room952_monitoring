@@ -45,7 +45,7 @@ class DetailsOfEachAircon {
     //   power = _uiConponents(iconSymbol: Tab(icon: Image.asset('assets/images/power.png', color: Colors.white, scale: 10,)), textContent: '-');
     //   frequency = _uiConponents(iconSymbol: Tab(icon: Image.asset('assets/images/waves.png', color: Colors.white, scale: 10,)), textContent: '-');
     // }
-    connStatus = Consumer<MqttManager>(
+    connStatus = Consumer<MqttManagerImpl>(
       builder: (context, value, child) {
         return _uiConponents(
           iconSymbol: Tab(
@@ -54,7 +54,7 @@ class DetailsOfEachAircon {
             color: Colors.white,
             scale: 10,
           )),
-          textContent: value.i.toString(),
+          textContent: '',
         );
       },
     );

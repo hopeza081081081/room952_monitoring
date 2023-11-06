@@ -1,26 +1,20 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:provider/provider.dart';
 import 'package:room952_monitoring/AppInfo.dart';
 import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
 import 'package:room952_monitoring/networking/MqttManager.dart';
-import 'package:room952_monitoring/networking/bloc/mqtt_payload_data/mqtt_payload_data_bloc.dart';
 import 'package:room952_monitoring/presentation/realtime_aircondition/realtime_aircondition_box.dart';
-import 'package:room952_monitoring/realtime/aircontroller/mainContent/RealtimeAirconControllerMainContent.dart';
+import 'package:room952_monitoring/presentation/realtime_raspberrypi/widgets/realtime_classroom_status.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RealtimeRaspberryPi.dart';
-
-import 'repository/HistoryRepository.dart';
+import 'package:room952_monitoring/utils/injection.dart' as di;
 
 void main() async {
+  di.getInjection();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
@@ -32,27 +26,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<MqttManagerBloc>(
-          create: (context) => MqttManagerBloc(),
-        )
-      ],
-      child: MaterialApp(
-          title: 'Room 952 Monitoring.',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            brightness: Brightness.dark,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          home: MyHomePage(title: 'Room 952 Monitoring.')),
+    return MaterialApp(
+      title: 'Room 952 Monitoring.',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        brightness: Brightness.dark,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MyHomePage(title: 'Room 952 Monitoring.'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  const MyHomePage({Key? key, this.title});
   final String? title;
 
   @override
@@ -63,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController = PageController();
   int _selectedIndex = 0;
-  MqttManager mqttClient = MqttManager();
   String appbarTitle = "ข้อมูลจากอุปกรณ์ต่าง ๆ";
   var wifiBSSID;
   var wifiIP;
@@ -74,23 +61,14 @@ class _MyHomePageState extends State<MyHomePage>
   late ConnectionWarning connBarWarning;
 
   @override
-  // ignore: missing_return
   initState() {
-    mqttClient.clientMQTT.onConnected = onConnected;
-    mqttClient.clientMQTT.onDisconnected = onDisconnected;
-    mqttClient.clientMQTT.onAutoReconnect = () {
-      setState(() {
-        isConnectionWarningShown = true;
-      });
-    };
-    mqttClient.connectMQTT();
+    di.locator<MqttManager>().connectMQTT();
     connBarWarning = ConnectionWarning();
     _connChecker();
     super.initState();
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
   @override
@@ -99,10 +77,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
-    // print(context.watch<MqttManager>().mqttData);
-
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 24,
@@ -123,9 +99,7 @@ class _MyHomePageState extends State<MyHomePage>
                     //   warningMsg: "can't establishing connection to server.",
                     //   isShow: isConnectionWarningShown,
                     // ),
-                    RealtimeRaspberryPi(
-                      mqttClient: mqttClient,
-                    ),
+                    RealtimeClassroomStatus(),
                     RealtimeAirconditionBox(),
                   ],
                 ),
@@ -181,11 +155,7 @@ class _MyHomePageState extends State<MyHomePage>
     // print(jsonDecode(pt));
 
     if (c[0].topic == "myFinalProject/airconController4/measure") {
-      context.read<MqttManagerBloc>().add(
-            StartListeningPayloadEvent(
-              mqttMessagePayload: jsonDecode(pt),
-            ),
-          );
+      
     }
     // if (c[0].topic == "myFinalProject/airconController1/measure") {}
     // if (c[0].topic == "myFinalProject/airconController1/properties") {}
@@ -202,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void onConnected() {
-    mqttClient.clientMQTT.updates!.listen(onMessage);
+    // mqttClient.clientMQTT.updates!.listen(onMessage);
     // CoolAlert.show(
     //   context: context,
     //   type: CoolAlertType.success,
@@ -214,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void onDisconnected() {
-    mqttClient.clientMQTT.doAutoReconnect(force: true);
+    // mqttClient.clientMQTT.doAutoReconnect(force: true);
     CoolAlert.show(
       context: context,
       type: CoolAlertType.error,

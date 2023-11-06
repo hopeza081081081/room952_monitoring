@@ -8,10 +8,9 @@ import 'package:room952_monitoring/DataModelJson.dart';
 import 'package:room952_monitoring/networking/MqttManager.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RaspberrypiCard.dart';
 
-// ignore: must_be_immutable
 class RealtimeRaspberryPi extends StatefulWidget {
-  MqttManager? mqttClient;
-  RealtimeRaspberryPi({this.mqttClient});
+  final MqttManager mqttManager;
+  RealtimeRaspberryPi({required this.mqttManager});
 
   @override
   _RealtimeRaspberryPiState createState() =>
@@ -40,14 +39,6 @@ class _RealtimeRaspberryPiState
   void initState() {
     // TODO: implement initState
     dmj = DataModelJson();
-    widget.mqttClient!.clientMQTT.updates!.listen(onMessage);
-    widget.mqttClient!.clientMQTT.onDisconnected = onDisconnected;
-
-    if(widget.mqttClient!.clientMQTT.connectionStatus!.state != MqttConnectionState.connected){
-      dmj.rpidata[0]['online'] = false;
-      dmj.rpidata[1]['online'] = false;
-    }
-
     Timer.periodic(new Duration(seconds: 2), (timer) {
       streamControllerForRpiData.add(dmj.rpidata);
     });
@@ -91,41 +82,4 @@ class _RealtimeRaspberryPiState
     }
     return _raspberrypiMainCard.getCard();
   }
-
-  void onMessage(List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage masPayload = c[0].payload as MqttPublishMessage;
-    final pt = MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
-
-    if (c[0].topic == "myFinalProject/rpi1/objDetector") {
-      dmj.rpidata[0]['isPerson'] = jsonDecode(pt)['isPerson'];
-      dmj.rpidata[0]['prob'] = jsonDecode(pt)['prob'];
-      dmj.rpidata[0]['online'] = true;
-    }
-    if (c[0].topic == "myFinalProject/rpi1/onlineStatus/online") {
-      dmj.rpidata[0]['online'] = pt == 'true' ? true : false;
-    }
-
-    if (c[0].topic == "myFinalProject/rpi2/objDetector") {
-      dmj.rpidata[1]['isPerson'] = jsonDecode(pt)['isPerson'];
-      dmj.rpidata[1]['prob'] = jsonDecode(pt)['prob'];
-      dmj.rpidata[1]['online'] = true;
-    }
-    if (c[0].topic == "myFinalProject/rpi2/onlineStatus/online") {
-      dmj.rpidata[1]['online'] = pt == 'true' ? true : false;
-    }
-
-    if(c[0].topic == "myFinalProject/server/properties/online"){
-      if(pt == 'false'){
-        dmj.rpidata[0]['online'] = false;
-        dmj.rpidata[1]['online'] = false;
-      }
-    }
-  }
-
-  void onDisconnected(){
-    print('MQTT is disconnected.');
-    dmj.rpidata[0]['online'] = false;
-    dmj.rpidata[1]['online'] = false;
-  }
-
 }
