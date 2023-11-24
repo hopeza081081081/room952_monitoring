@@ -7,9 +7,13 @@ import 'package:getwidget/components/list_tile/gf_list_tile.dart';
 import 'package:getwidget/position/gf_position.dart';
 import 'package:getwidget/shape/gf_button_shape.dart';
 import 'package:getwidget/types/gf_button_type.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:room952_monitoring/networking/MqttManager.dart';
 
 class RealtimeClassroomStatus extends StatelessWidget {
-  const RealtimeClassroomStatus({super.key});
+  final MqttManager mqttManager;
+
+  const RealtimeClassroomStatus({super.key, required this.mqttManager});
 
   final FaIcon personIcon = const FaIcon(
     FontAwesomeIcons.users,
@@ -28,6 +32,16 @@ class RealtimeClassroomStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // MqttServerClient mqttServerClient = mqttManager.getMqttServerClient();
+    // mqttServerClient.onConnected = () {
+    //   print('Connectedddddd');
+    //   mqttServerClient.updates!.listen(
+    //     (event) {
+    //       print(event);
+    //     },
+    //   );
+    // };
+
     return GFCard(
       boxFit: BoxFit.cover,
       titlePosition: GFPosition.start,

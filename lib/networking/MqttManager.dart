@@ -6,17 +6,17 @@ import 'package:uuid/uuid.dart';
 import 'package:room952_monitoring/environments/AppENV.dart';
 
 abstract class MqttManager {
-  Future<void> connectMQTT();
+  Future<MqttServerClient> connectMQTT();
   void notifyListenerTrigger();
   void pong();
-
+  Future<MqttServerClient> getMqttServerClient();
 }
 
 class MqttManagerImpl extends ChangeNotifier implements MqttManager {
   final clientMQTT = MqttServerClient(AppENV.MqttHost, '');
 
   @override
-  Future connectMQTT() async {
+  Future<MqttServerClient> connectMQTT() async {
     try {
       var uuid = Uuid();
       clientMQTT.port = AppENV.MqttPort;
@@ -51,6 +51,14 @@ class MqttManagerImpl extends ChangeNotifier implements MqttManager {
       clientMQTT.subscribe('myFinalProject/rpi2/#', MqttQos.exactlyOnce);
       clientMQTT.subscribe(
           'myFinalProject/server/properties/online', MqttQos.exactlyOnce);
+
+      // clientMQTT.updates!.listen(
+      //   (event) {
+      //     print(event);
+      //   },
+      // );
+
+      return clientMQTT;
     } catch (_) {
       clientMQTT.disconnect();
       rethrow;
@@ -66,5 +74,10 @@ class MqttManagerImpl extends ChangeNotifier implements MqttManager {
   void pong() {
     print(
         'EXAMPLE::Ping response client callback invoked - you may want to disconnect your broker here');
+  }
+
+  @override
+  Future<MqttServerClient> getMqttServerClient() async {
+    return clientMQTT;
   }
 }

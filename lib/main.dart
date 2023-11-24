@@ -1,20 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:room952_monitoring/AppInfo.dart';
 import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
 import 'package:room952_monitoring/networking/MqttManager.dart';
 import 'package:room952_monitoring/presentation/realtime_aircondition/realtime_aircondition_box.dart';
-import 'package:room952_monitoring/presentation/realtime_raspberrypi/widgets/realtime_classroom_status.dart';
+import 'package:room952_monitoring/presentation/realtime_picam_classroom/widgets/realtime_classroom_status.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RealtimeRaspberryPi.dart';
 import 'package:room952_monitoring/utils/injection.dart' as di;
 
 void main() async {
   di.getInjection();
+  await di.locator<MqttManager>().connectMQTT();
+  MqttServerClient a = await di.locator<MqttManager>().getMqttServerClient();
+  a.updates!.listen((event) { print(event); });
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
@@ -59,10 +64,19 @@ class _MyHomePageState extends State<MyHomePage>
   bool isInternetOn = true;
   bool isConnectionWarningShown = false;
   late ConnectionWarning connBarWarning;
+  late MqttServerClient mqttServerClient;
 
   @override
   initState() {
-    di.locator<MqttManager>().connectMQTT();
+    // mqttServerClient = di.locator<MqttManager>().connectMQTT() as MqttServerClient;
+    // di.locator<MqttManager>().notifyListenerTrigger();
+    // mqttServerClient.updates!.listen((event) {
+    //   print(event);
+    // });
+    // mqttServerClient.onConnected = onConnected;
+    // mqttServerClient.updates!.listen((event) {
+
+    // },);
     connBarWarning = ConnectionWarning();
     _connChecker();
     super.initState();
@@ -99,7 +113,9 @@ class _MyHomePageState extends State<MyHomePage>
                     //   warningMsg: "can't establishing connection to server.",
                     //   isShow: isConnectionWarningShown,
                     // ),
-                    RealtimeClassroomStatus(),
+                    RealtimeClassroomStatus(
+                      mqttManager: di.locator(),
+                    ),
                     RealtimeAirconditionBox(),
                   ],
                 ),
@@ -152,11 +168,9 @@ class _MyHomePageState extends State<MyHomePage>
     final pt =
         MqttPublishPayload.bytesToStringAsString(masPayload.payload.message);
 
-    // print(jsonDecode(pt));
+    print(jsonDecode(pt));
 
-    if (c[0].topic == "myFinalProject/airconController4/measure") {
-      
-    }
+    if (c[0].topic == "myFinalProject/airconController4/measure") {}
     // if (c[0].topic == "myFinalProject/airconController1/measure") {}
     // if (c[0].topic == "myFinalProject/airconController1/properties") {}
 
@@ -172,7 +186,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void onConnected() {
-    // mqttClient.clientMQTT.updates!.listen(onMessage);
+    print('Connectedddddd');
+    mqttServerClient.updates!.listen(onMessage);
     // CoolAlert.show(
     //   context: context,
     //   type: CoolAlertType.success,
