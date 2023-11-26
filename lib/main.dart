@@ -18,8 +18,7 @@ import 'package:room952_monitoring/utils/injection.dart' as di;
 void main() async {
   di.getInjection();
   await di.locator<MqttManager>().connectMQTT();
-  MqttServerClient a = await di.locator<MqttManager>().getMqttServerClient();
-  a.updates!.listen((event) { print(event); });
+
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {

@@ -5,8 +5,9 @@ final GetIt locator = GetIt.instance;
 
 void getInjection() async {
   if (!locator.isRegistered<MqttManager>()) {
-    locator.registerFactory<MqttManager>(
-      () => MqttManagerImpl(),
-    );
+    // locator.registerLazySingleton<MqttManager>(
+    //   () => MqttManagerImpl(),
+    // );
+    locator.registerSingleton<MqttManager>(MqttManagerImpl());
   }
 }

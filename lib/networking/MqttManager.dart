@@ -9,7 +9,7 @@ abstract class MqttManager {
   Future<MqttServerClient> connectMQTT();
   void notifyListenerTrigger();
   void pong();
-  Future<MqttServerClient> getMqttServerClient();
+  MqttServerClient getMqttServerClient();
 }
 
 class MqttManagerImpl extends ChangeNotifier implements MqttManager {
@@ -32,6 +32,7 @@ class MqttManagerImpl extends ChangeNotifier implements MqttManager {
 
       if (clientMQTT.connectionStatus!.state == MqttConnectionState.connected) {
         print('EXAMPLE::Mosquitto client connected');
+        print('memory address of clientMQTT: ${clientMQTT.hashCode}');
       } else {
         /// Use status here rather than state if you also want the broker return code.
         print(
@@ -77,7 +78,7 @@ class MqttManagerImpl extends ChangeNotifier implements MqttManager {
   }
 
   @override
-  Future<MqttServerClient> getMqttServerClient() async {
+  MqttServerClient getMqttServerClient() {
     return clientMQTT;
   }
 }
