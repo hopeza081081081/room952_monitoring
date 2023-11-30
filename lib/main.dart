@@ -11,14 +11,13 @@ import 'package:room952_monitoring/datahistory/DataHistory.dart';
 import 'package:room952_monitoring/networking/ConnectionWarning.dart';
 import 'package:room952_monitoring/networking/MqttManager.dart';
 import 'package:room952_monitoring/presentation/realtime_aircondition/realtime_aircondition_box.dart';
-import 'package:room952_monitoring/presentation/realtime_picam_classroom/widgets/realtime_classroom_status.dart';
+import 'package:room952_monitoring/presentation/realtime_picam_classroom/realtime_classroom_status.dart';
 import 'package:room952_monitoring/realtime/raspberryPI/mainContent/RealtimeRaspberryPi.dart';
 import 'package:room952_monitoring/utils/injection.dart' as di;
 
 void main() async {
   di.getInjection();
   await di.locator<MqttManager>().connectMQTT();
-
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
@@ -67,15 +66,6 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   initState() {
-    // mqttServerClient = di.locator<MqttManager>().connectMQTT() as MqttServerClient;
-    // di.locator<MqttManager>().notifyListenerTrigger();
-    // mqttServerClient.updates!.listen((event) {
-    //   print(event);
-    // });
-    // mqttServerClient.onConnected = onConnected;
-    // mqttServerClient.updates!.listen((event) {
-
-    // },);
     connBarWarning = ConnectionWarning();
     _connChecker();
     super.initState();

@@ -32,15 +32,13 @@ class RealtimeClassroomStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MqttServerClient mqttServerClient = mqttManager.getMqttServerClient();
-    // mqttServerClient.onConnected = () {
-    //   print('Connectedddddd');
-    //   mqttServerClient.updates!.listen(
-    //     (event) {
-    //       print(event);
-    //     },
-    //   );
-    // };
+    MqttServerClient mqttServerClient = mqttManager.getMqttServerClient();
+    print('memory address of mqttServerClient: ${mqttServerClient.hashCode}');
+    mqttServerClient.updates!.listen(
+      (event) {
+        // print(event);
+      },
+    );
 
     return GFCard(
       boxFit: BoxFit.cover,
